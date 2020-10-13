@@ -1,29 +1,37 @@
 var monkey , monkey_running
 var banana ,bananaImage, obstacle, obstacleImage
 var FoodGroup, obstacleGroup
-var score
+var score,bg,bg1;
 
 function preload(){  
   monkey_running=            loadAnimation("Monkey_01.png","Monkey_02.png","Monkey_03.png","Monkey_04.png","Monkey_05.png","Monkey_06.png","Monkey_07.png","Monkey_08.png","Monkey_09.png","Monkey_10.png");
   
   bananaImage = loadImage("banana.png");
   obstaceImage = loadImage("stone.png");
+  bg=loadImage("jungle.jpg");
+  
  
 }
 
 
 
 function setup() {
-   createCanvas(600, 600); 
+   createCanvas(400, 400); 
   
   
-   monkey=createSprite(80,315,20,20);
+   monkey=createSprite(60,350,20,20);
    monkey.addAnimation("run", monkey_running);  
    monkey.scale=0.1;
   
-  ground = createSprite(400,350,900,10);
+  ground = createSprite(100,350,600,10);
   ground.velocityX=-4;
   ground.x=ground.width/2;
+  ground.visible=false;
+  
+  bg1=createSprite(100,100);
+  bg1.addImage(bg);
+  bg1.velocityX=-2;
+  //bg1.scale=1.4;
  
 
   FoodGroup = new Group();
@@ -37,14 +45,20 @@ function setup() {
 
 function draw() {
   
-  background(255);
+  background("black");
   
+    
+  if(bg1.x<0) {
+    bg1.x=bg1.width/2;
+  }
     
   if(ground.x<0) {
     ground.x=ground.width/2;
   }
-  
-  
+  if(monkey.isTouching(FoodGroup))
+    {
+      FoodGroup.destroyEach();
+    }
    
     if(keyDown("space") ) {
       monkey.velocityY = -12;
@@ -65,6 +79,7 @@ function draw() {
     if(obstaclesGroup.isTouching(monkey)){
         ground.velocityX = 0;
         monkey.velocityY = 0;
+      bg1.velocityX=0;
         obstaclesGroup.setVelocityXEach(0);
         FoodGroup.setVelocityXEach(0);
         obstaclesGroup.setLifetimeEach(-1);
@@ -85,7 +100,7 @@ function draw() {
 function spawnFood() {
   
   if (frameCount % 80 === 0) {
-    banana = createSprite(600,250,40,10);
+    banana = createSprite(600,350,40,10);
     banana.y = random(120,200);    
     banana.velocityX = -5;
     
